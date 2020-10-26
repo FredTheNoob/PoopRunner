@@ -56,7 +56,7 @@ public class LaneGenerator : MonoBehaviour
         foreach (GameObject lane in lanes)
         {
             // Get a random number between 0 and 2 (33% chance)
-            int rnd1 = Random.Range(0, 3);
+            int rnd1 = Random.Range(0, 10);
 
             // If the number is not 0
             if (rnd1 != 0)
@@ -65,7 +65,7 @@ public class LaneGenerator : MonoBehaviour
                 Instantiate(laneObj, lane.transform.position, Quaternion.identity);
                 
                 // Get another random number between 0 and 4 (20% chance)
-                int rnd2 = Random.Range(0, 5);
+                int rnd2 = Random.Range(0, 20);
                 // If the number is 0
                 if (rnd2 == 0)
                 {
