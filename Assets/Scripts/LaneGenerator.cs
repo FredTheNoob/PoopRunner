@@ -62,15 +62,22 @@ public class LaneGenerator : MonoBehaviour
             if (rnd1 != 0)
             {
                 // Spawn a lane
-                Instantiate(laneObj, lane.transform.position, Quaternion.identity);
+                Instantiate(laneObj, lane.transform.position, lane.transform.rotation);
                 
                 // Get another random number between 0 and 4 (20% chance)
                 int rnd2 = Random.Range(0, 20);
                 // If the number is 0
                 if (rnd2 == 0)
                 {
-                    // Make a spike with an offset of 0.5 of the y-axis
-                    Instantiate(spike, lane.transform.position + new Vector3(0, 0.5f, 0), Quaternion.identity);
+                    if (lane.transform.rotation.eulerAngles.y == 180) {
+                        Instantiate(spike, lane.transform.position + new Vector3(0, -0.5f, 0), lane.transform.rotation);
+                    }
+                    else {
+                        // Make a spike with an offset of 0.5 of the y-axis
+                        Instantiate(spike, lane.transform.position + new Vector3(0, 0.5f, 0), lane.transform.rotation);
+                    }
+
+                    
                 }
             }
         }
