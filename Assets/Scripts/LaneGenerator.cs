@@ -1,9 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 
 public class LaneGenerator : MonoBehaviour
 {
+    public GameObject[] startLanes;
     // Array of lanes containing gameobjects
     public GameObject[] lanes;
     // This is the object that will be put
@@ -18,10 +20,17 @@ public class LaneGenerator : MonoBehaviour
     public float timerQueue;
     // This is a internal value that counts up with the Time.DeltaTime
     private float timer;
-
+    public float DestroyMapAfter;
+    public Transform EmptyObj;
+    
     // Start is called before the first frame update
     void Start()
     {
+        foreach (GameObject lane in startLanes)
+        {
+            Destroy(lane, DestroyMapAfter);
+        }
+        
         // Generate lanes and do this 50 times (to have a start map)
         for (int i = 0; i < 50; i++)
         {
@@ -62,7 +71,10 @@ public class LaneGenerator : MonoBehaviour
             if (rnd1 != 0)
             {
                 // Spawn a lane
-                Instantiate(laneObj, lane.transform.position, lane.transform.rotation);
+                GameObject laneChild = (GameObject) Instantiate(laneObj, lane.transform.position, lane.transform.rotation);
+                Destroy(laneChild, DestroyMapAfter);
+
+                laneChild.transform.parent = EmptyObj;
                 
                 // Get another random number between 0 and 4 (20% chance)
                 int rnd2 = Random.Range(0, 20);
@@ -70,14 +82,16 @@ public class LaneGenerator : MonoBehaviour
                 if (rnd2 == 0)
                 {
                     if (lane.transform.rotation.eulerAngles.y == 180) {
-                        Instantiate(spike, lane.transform.position + new Vector3(0, -0.5f, 0), lane.transform.rotation);
+                        GameObject laneChild2 = (GameObject) Instantiate(spike, lane.transform.position + new Vector3(0, -0.5f, 0), lane.transform.rotation);
+                        laneChild2.transform.parent = EmptyObj;
+                        Destroy(laneChild2, DestroyMapAfter);
                     }
                     else {
                         // Make a spike with an offset of 0.5 of the y-axis
-                        Instantiate(spike, lane.transform.position + new Vector3(0, 0.5f, 0), lane.transform.rotation);
+                        GameObject laneChild3 = (GameObject) Instantiate(spike, lane.transform.position + new Vector3(0, 0.5f, 0), lane.transform.rotation);
+                        laneChild3.transform.parent = EmptyObj;
+                        Destroy(laneChild3, DestroyMapAfter);
                     }
-
-                    
                 }
             }
         }
