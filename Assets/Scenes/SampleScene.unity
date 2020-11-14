@@ -375,9 +375,10 @@ MonoBehaviour:
   - {fileID: 1663394681}
   laneObj: {fileID: 7171276073088421329, guid: fd9d56e69a6a97542ad0d6de8ce0c7b7, type: 3}
   laneRef: {fileID: 808518835}
-  spike: {fileID: 7171276073088421329, guid: b427889c74f291a49b06068d0f2c08c4, type: 3}
+  spikes:
+  - {fileID: 7237815613140685291, guid: cceab257546315a42b44499816a7b29a, type: 3}
   timerQueue: 0.1
-  DestroyMapAfter: 20
+  DestroyMapAfter: 30
   EmptyObj: {fileID: 1057665899}
 --- !u!1 &122726419
 GameObject:

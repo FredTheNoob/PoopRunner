@@ -64,7 +64,7 @@ public class PlayerController : MonoBehaviour
         isAccelerated = true;
         
         // If the player isn't in a hole
-        if (!inHole)
+        if (!inHole && !isDead)
         {
             // We wish to move the player negatively on the x-axis
             rb.velocity = new Vector3(-movementSpeed, rb.velocity.y, rb.velocity.z);
@@ -107,7 +107,7 @@ public class PlayerController : MonoBehaviour
             // We wait for to seconds, to let the player accelerate
             yield return new WaitForSeconds(2);
         }
-        
+
         // If the player doesn't move, he was most likely stopped by an object
         if (rb.velocity.x == 0)
         {

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using UnityEditor;
 using UnityEngine;
 
 public class LaneGenerator : MonoBehaviour
@@ -14,7 +15,7 @@ public class LaneGenerator : MonoBehaviour
     public GameObject laneRef;
 
     // This is a reference to the spike gameobject
-    public GameObject spike;
+    public GameObject[] spikes;
 
     // This value determines how many lanes to spawn per second
     public float timerQueue;
@@ -42,8 +43,10 @@ public class LaneGenerator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        timerQueue = 1 / FindObjectOfType<PlayerController>().movementSpeed;
+        
         // If the timer exceeds the threshold
-        if (timer >= timerQueue)
+        if (timer >= timerQueue && FindObjectOfType<PlayerController>().isDead == false)
         {
             // Call the generate function
             Generate();
@@ -64,8 +67,8 @@ public class LaneGenerator : MonoBehaviour
         // Do a foreach loop through the lanes array
         foreach (GameObject lane in lanes)
         {
-            // Get a random number between 0 and 2 (33% chance)
-            int rnd1 = Random.Range(0, 10);
+            // Get a random number between 0 and 20
+            int rnd1 = Random.Range(0, 20);
 
             // If the number is not 0
             if (rnd1 != 0)
@@ -76,21 +79,21 @@ public class LaneGenerator : MonoBehaviour
 
                 laneChild.transform.parent = EmptyObj;
                 
-                // Get another random number between 0 and 4 (20% chance)
-                int rnd2 = Random.Range(0, 20);
+                // Get another random number between 0 and 40
+                int rnd2 = Random.Range(0, 40);
                 // If the number is 0
                 if (rnd2 == 0)
                 {
                     if (lane.transform.rotation.eulerAngles.y == 180) {
-                        GameObject laneChild2 = (GameObject) Instantiate(spike, lane.transform.position + new Vector3(0, -0.5f, 0), lane.transform.rotation);
-                        laneChild2.transform.parent = EmptyObj;
-                        Destroy(laneChild2, DestroyMapAfter);
+                        createSpike(new Vector3(0,-0.85f, 0), lane);
+                    }
+                    else if (lane.transform.rotation.eulerAngles.x == 310)
+                    {
+                        createSpike(new Vector3(0,1.3f, 0), lane);
                     }
                     else {
                         // Make a spike with an offset of 0.5 of the y-axis
-                        GameObject laneChild3 = (GameObject) Instantiate(spike, lane.transform.position + new Vector3(0, 0.5f, 0), lane.transform.rotation);
-                        laneChild3.transform.parent = EmptyObj;
-                        Destroy(laneChild3, DestroyMapAfter);
+                        createSpike(new Vector3(0,0.85f, 0), lane);
                     }
                 }
             }
@@ -98,5 +101,12 @@ public class LaneGenerator : MonoBehaviour
 
         // Move onto the next lane
         laneRef.transform.position += new Vector3(-laneObj.transform.localScale.x, 0, 0);
+    }
+
+    void createSpike(Vector3 _position, GameObject lane)
+    {
+        GameObject laneChild = (GameObject) Instantiate(spikes[Random.Range(0,spikes.Length)], lane.transform.position + _position, lane.transform.rotation);
+        laneChild.transform.parent = EmptyObj;
+        Destroy(laneChild, DestroyMapAfter);
     }
 }
