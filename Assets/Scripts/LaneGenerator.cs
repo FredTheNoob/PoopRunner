@@ -46,7 +46,7 @@ public class LaneGenerator : MonoBehaviour
         timerQueue = 1 / FindObjectOfType<PlayerController>().movementSpeed;
         
         // If the timer exceeds the threshold
-        if (timer >= timerQueue && FindObjectOfType<PlayerController>().isDead == false)
+        if (timer >= timerQueue)
         {
             // Call the generate function
             Generate();
