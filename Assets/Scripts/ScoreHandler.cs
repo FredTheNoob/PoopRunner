@@ -10,7 +10,8 @@ public class ScoreHandler : MonoBehaviour
     public TMP_Text scoreText;
     public GameObject gameOverUI;
 
-    public Rigidbody rb;
+    public Rigidbody[] rigidbodies;
+    private Rigidbody selectedBody;
     
     private int score;
     private bool isDead = false;
@@ -18,6 +19,31 @@ public class ScoreHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        int index = FindObjectOfType<SkinSelector>().boughtIndex;
+
+        switch (index)
+        {
+            case 0:
+                //DEFAULT
+                selectedBody = rigidbodies[0];
+                break;
+
+            case 1:
+                // TOILETPAPER
+                selectedBody = rigidbodies[1];
+                break;
+
+            case 2:
+                // HEADSET
+                selectedBody = rigidbodies[2];
+                break;
+
+            case 3:
+                // HAT
+                selectedBody = rigidbodies[3];
+                break;
+        }
+
         // Starting in 0 seconds.
         // Run StartCounting every 0.1 seconds
         InvokeRepeating("StartCounting", 0f, 0.1f);
@@ -44,20 +70,29 @@ public class ScoreHandler : MonoBehaviour
     void checkHealth()
     {
         // If the player doesn't move, he was most likely stopped by an object
-        if (rb.velocity.magnitude < 0.5f)
+        if (selectedBody.velocity.magnitude < 0.5f)
         {
+            Time.timeScale = 0;
+            FindObjectOfType<AudioManager>().Play("hit");
             // Therefore we set the isDead bool to true
             isDead = true;
-            //Time.timeScale = 0;
-            //rb.velocity = new Vector3(0f, rb.velocity.y, rb.velocity.z);
+            selectedBody.velocity = new Vector3(0f, selectedBody.velocity.y, selectedBody.velocity.z);
+            
+            // Stop running this method
+            CancelInvoke("checkHealth");
         }
     }
 
     // This listener is for the try again button
     public void btnTryAgain()
     {
+        Time.timeScale = 1;
         // Reload the scene
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void btnShop() {
+        SceneManager.LoadScene("MainMenu");
     }
 
     // This listener is for the quit button

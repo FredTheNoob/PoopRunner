@@ -12,11 +12,11 @@ public class PlayerController : MonoBehaviour
 
     public float movementSpeed;
     public float sideWaysSpeed;
+
+    public float maxSpeed;
     public float speedMultiplier = 0.01f;
 
     public float jumpForce;
-    
-    private bool inHole = false;
     private bool playerGrounded = true;
 
     public float mapRotSpeed = 100f;
@@ -24,33 +24,32 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (rb.position.y > 0.1f && Input.GetKey(KeyCode.Space) == false)
-        {
-            rb.AddForce(0, -jumpForce / 50, 0);
-        }
+        //if (rb.position.y > 0.1f && Input.GetKey(KeyCode.Space) == false && playerGrounded == true)
+        //{
+        //    rb.AddForce(0, -jumpForce / 2, 0);
+        //}
 
         // We wish to gradually increase the speed of the player, to make it more difficult. Therefore we add this multiplayer to the movementSpeed every frame
         movementSpeed += speedMultiplier;
-        
-        // If the player isn't in a hole
-        if (!inHole)
-        {
-            // We wish to move the player negatively on the x-axis
-            rb.velocity = new Vector3(-movementSpeed, rb.velocity.y, rb.velocity.z);
-        }
+
+        // We wish to move the player negatively on the x-axis
+        rb.velocity = new Vector3(-movementSpeed, rb.velocity.y, rb.velocity.z);
         
         // If the key A is pressed and the player is not in a hole
-        if (Input.GetKey(KeyCode.A) && !inHole) {
+        if (Input.GetKey(KeyCode.A)) {
             // Add a speed on the z, which makes the player move to the left
-            rb.AddForce(0, 0, -sideWaysSpeed); 
+            rb.AddForce(0,0,-sideWaysSpeed, ForceMode.Acceleration);
+            //rb.velocity = new Vector3(-movementSpeed, rb.velocity.y, -sideWaysSpeed); 
         }
         // If the key D is pressed
-        if (Input.GetKey(KeyCode.D) && !inHole) {
+        if (Input.GetKey(KeyCode.D)) {
             // Add a speed on the z, to make the player move right
-            rb.AddForce(0, 0, sideWaysSpeed); 
+            rb.AddForce(0,0,sideWaysSpeed, ForceMode.Acceleration);
+            //rb.velocity = new Vector3(-movementSpeed, rb.velocity.y, sideWaysSpeed); 
         }
         // If space is pressed (the player wants to jump)
-        if (Input.GetKey(KeyCode.Space) && !inHole && playerGrounded) {
+        if (Input.GetKey(KeyCode.Space) && playerGrounded) {
+            FindObjectOfType<AudioManager>().Play("jump");
             // We then add a force on the y-axis, this makes the player go upwards, we use a jumpForce variable, which is public so that we can easily access it in the Inspector
             rb.AddForce(0, jumpForce, 0);
             // We are no longer grounded
@@ -61,6 +60,7 @@ public class PlayerController : MonoBehaviour
         if (rb.position.z < 0.7f)
         {
             // The user wants to go left, therefore we call a function that does that and parse the Vector3.left argument
+            //Physics.gravity = new Vector3(0,9.82f, 0);
             RotateMap(Vector3.left);
         }  
         // If the z is bigger than 8.2
@@ -73,7 +73,6 @@ public class PlayerController : MonoBehaviour
         // If the key R is pressed
         if (Input.GetKey(KeyCode.R)) {
             // The user wants to retry again
-            Time.timeScale = 1;
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
